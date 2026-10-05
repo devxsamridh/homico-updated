@@ -1,0 +1,20 @@
+# Homico
+
+> Plan, design and build your home end-to-end — architects, raw materials, home services, and turnkey construction in one place.
+
+Homico helps homeowners in India plan, design, and build their dream homes. It combines on-demand home services (plumbing, electrical, painting, etc.), interior renovation, a raw materials marketplace, and full turnkey construction with project tracking.
+
+## Pages
+
+- [Home](/): Overview of services, materials, and construction.
+- [Home Services](/services): Book trusted home services — plumbing, electrical, painting, carpentry, AC service, cleaning, mason and labour.
+- [Home Maintenance](/services/home-services): Inspection-based home maintenance bookings.
+- [Renovation & Interiors](/services/renovation): Modular kitchens, false ceilings, interior design and full renovations.
+- [Raw Materials](/services/materials): Quality-verified construction materials catalog with delivery.
+- [Full Home Construction](/services/construction): Turnkey home construction with cost estimator and project tracking.
+- [Planning](/services/planning): Architectural planning and design services.
+- [Planning + Construction](/services/planning-construction): Combined planning and execution.
+- [Workforce](/services/workforce): Hire skilled construction workforce.
+- [Elevation Ideas](/services/elevation-ideas): Inspiration for home elevations.
+- [Cost Estimator](/tools/estimator): Free AI-powered cost estimator for home construction.
+- [Search](/search): Search across services, materials and designs.
