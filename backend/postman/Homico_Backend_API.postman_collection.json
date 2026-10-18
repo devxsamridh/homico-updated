@@ -1,0 +1,675 @@
+{
+  "info": {
+    "_postman_id": "homico-backend-v1",
+    "name": "Homico Backend API",
+    "description": "Complete API collection for the Homico Home Services & Construction backend. All authenticated routes require setting the `{{accessToken}}` variable via the login/register request.\n\nBase URL: {{baseUrl}} (default: http://localhost:8000/api)\n\nRun the Seed script first: `npm run seed` in the backend directory.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8000/api", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" },
+    { "key": "refreshToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth",
+      "item": [
+        {
+          "name": "Register",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if(pm.response.code === 201) {",
+                  "  const b = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', b.access);",
+                  "  pm.collectionVariables.set('refreshToken', b.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new_user@example.com\",\n  \"username\": \"new_user\",\n  \"full_name\": \"New User\",\n  \"phone\": \"+919876543210\",\n  \"password\": \"Password123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"]}
+          }
+        },
+        {
+          "name": "Login (Customer)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if(pm.response.code === 200) {",
+                  "  const b = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', b.access);",
+                  "  pm.collectionVariables.set('refreshToken', b.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@homico.test\",\n  \"password\": \"demo_password_123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Login (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if(pm.response.code === 200) {",
+                  "  const b = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', b.access);",
+                  "  pm.collectionVariables.set('refreshToken', b.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@homico.test\",\n  \"password\": \"demo_password_123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Login (Vendor - QuickFix)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if(pm.response.code === 200) {",
+                  "  const b = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', b.access);",
+                  "  pm.collectionVariables.set('refreshToken', b.refresh);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"vendor1@homico.test\",\n  \"password\": \"demo_password_123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if(pm.response.code === 200) {",
+                  "  const b = pm.response.json();",
+                  "  pm.collectionVariables.set('accessToken', b.access);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/refresh", "host": ["{{baseUrl}}"], "path": ["auth", "refresh"]}
+          }
+        },
+        {
+          "name": "Get Current User (Me)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏠 Services (Public)",
+      "item": [
+        {
+          "name": "List All Categories (with nested items)",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/services/categories", "host": ["{{baseUrl}}"], "path": ["services", "categories"]}
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/services/categories/plumbing", "host": ["{{baseUrl}}"], "path": ["services", "categories", "plumbing"]}
+          }
+        },
+        {
+          "name": "List Service Items",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/services/items?is_hourly=false",
+              "host": ["{{baseUrl}}"],
+              "path": ["services", "items"],
+              "query": [
+                {"key": "is_hourly", "value": "false"},
+                {"key": "category", "value": "plumbing", "disabled": true},
+                {"key": "search", "value": "tap", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "[Admin] Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Interior Design\",\n  \"description\": \"Space planning, furniture layout, and interior styling services\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/services/categories", "host": ["{{baseUrl}}"], "path": ["services", "categories"]}
+          }
+        },
+        {
+          "name": "[Admin] Create Service Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"category\": \"CATEGORY_OBJECT_ID_HERE\",\n  \"title\": \"3D Interior Visualization\",\n  \"description\": \"Photorealistic renders of room interiors before renovation\",\n  \"is_hourly\": false,\n  \"inspection_fee\": 89\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/services/items", "host": ["{{baseUrl}}"], "path": ["services", "items"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "📅 Bookings",
+      "item": [
+        {
+          "name": "List My Bookings",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/bookings/services", "host": ["{{baseUrl}}"], "path": ["bookings", "services"]}
+          }
+        },
+        {
+          "name": "Create Booking (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service\": \"SERVICE_ITEM_OBJECT_ID_HERE\",\n  \"full_name\": \"Demo Customer\",\n  \"phone\": \"+919876543211\",\n  \"address\": \"142, 12th Main Road, Indiranagar\",\n  \"city\": \"Bengaluru\",\n  \"pincode\": \"560038\",\n  \"scheduled_date\": \"2026-10-20\",\n  \"time_slot\": \"09:00 - 11:00\",\n  \"problem\": \"Leaking kitchen tap\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/services", "host": ["{{baseUrl}}"], "path": ["bookings", "services"]}
+          }
+        },
+        {
+          "name": "Get Booking Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/bookings/services/BOOKING_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "services", "BOOKING_ID_HERE"]}
+          }
+        },
+        {
+          "name": "Cancel Booking (Customer)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/services/BOOKING_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "services", "BOOKING_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Admin] Assign Vendor to Booking",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"vendor\": \"VENDOR_OBJECT_ID_HERE\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/services/BOOKING_ID_HERE/assign", "host": ["{{baseUrl}}"], "path": ["bookings", "services", "BOOKING_ID_HERE", "assign"]}
+          }
+        },
+        {
+          "name": "[Vendor] Mark Inspection Completed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"inspection_completed\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/services/BOOKING_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "services", "BOOKING_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "💬 Quotations",
+      "item": [
+        {
+          "name": "[Vendor] Create Draft Quotation",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"labor_cost\": 650,\n  \"material_cost\": 1200,\n  \"description\": \"Replace faulty capacitor and perform deep coil jet cleaning\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/services/BOOKING_ID_HERE/quotations", "host": ["{{baseUrl}}"], "path": ["bookings", "services", "BOOKING_ID_HERE", "quotations"]}
+          }
+        },
+        {
+          "name": "[Vendor] Send Quotation to Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"sent\",\n  \"valid_days\": 7\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/quotations/QUOTATION_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "quotations", "QUOTATION_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Customer] Get Quotation",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/bookings/quotations/QUOTATION_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "quotations", "QUOTATION_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Customer] Accept Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/quotations/QUOTATION_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "quotations", "QUOTATION_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Customer] Reject Quotation",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"rejected\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/bookings/quotations/QUOTATION_ID_HERE", "host": ["{{baseUrl}}"], "path": ["bookings", "quotations", "QUOTATION_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🧱 Materials (Public Catalog)",
+      "item": [
+        {
+          "name": "List Materials (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/materials",
+              "host": ["{{baseUrl}}"],
+              "path": ["materials"],
+              "query": [
+                {"key": "category", "value": "Construction", "disabled": true},
+                {"key": "search", "value": "cement", "disabled": true},
+                {"key": "in_stock", "value": "true", "disabled": true},
+                {"key": "page", "value": "1", "disabled": true},
+                {"key": "limit", "value": "10", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Material by ID",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/materials/MATERIAL_ID_HERE", "host": ["{{baseUrl}}"], "path": ["materials", "MATERIAL_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Vendor] Create Material",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium White Sand\",\n  \"category\": \"Construction\",\n  \"description\": \"Clean white sand for plastering\",\n  \"price\": 1200,\n  \"unit\": \"tonne\",\n  \"stock\": 30\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/materials", "host": ["{{baseUrl}}"], "path": ["materials"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "📦 Material Orders",
+      "item": [
+        {
+          "name": "List My Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/materials/orders", "host": ["{{baseUrl}}"], "path": ["materials", "orders"]}
+          }
+        },
+        {
+          "name": "Create Order (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    { \"material\": \"MATERIAL_ID_HERE\", \"quantity\": 5 },\n    { \"material\": \"ANOTHER_MATERIAL_ID_HERE\", \"quantity\": 20 }\n  ],\n  \"delivery_address\": \"142, 12th Main Road, Indiranagar\",\n  \"city\": \"Bengaluru\",\n  \"pincode\": \"560038\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/materials/orders", "host": ["{{baseUrl}}"], "path": ["materials", "orders"]}
+          }
+        },
+        {
+          "name": "Get Order Detail",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/materials/orders/ORDER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["materials", "orders", "ORDER_ID_HERE"]}
+          }
+        },
+        {
+          "name": "Cancel Order (Customer - Pending only)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/materials/orders/ORDER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["materials", "orders", "ORDER_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Admin] Advance Order to Confirmed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmed\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/materials/orders/ORDER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["materials", "orders", "ORDER_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏗️ Projects",
+      "item": [
+        {
+          "name": "List My Projects",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"]}
+          }
+        },
+        {
+          "name": "Create Project (Customer)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Koramangala Kitchen Renovation\",\n  \"description\": \"Full modular kitchen refit with plumbing and tile work\",\n  \"site_address\": \"55, 4th Block, Koramangala\",\n  \"city\": \"Bengaluru\",\n  \"pincode\": \"560034\",\n  \"start_date\": \"2026-11-01\",\n  \"estimated_end_date\": \"2026-12-31\",\n  \"budget\": 350000\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"]}
+          }
+        },
+        {
+          "name": "Get Project (with linked bookings & orders)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/PROJECT_ID_HERE", "host": ["{{baseUrl}}"], "path": ["projects", "PROJECT_ID_HERE"]}
+          }
+        },
+        {
+          "name": "Cancel Project",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects/PROJECT_ID_HERE", "host": ["{{baseUrl}}"], "path": ["projects", "PROJECT_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🏢 Vendors",
+      "item": [
+        {
+          "name": "List Verified Vendors",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/vendors",
+              "host": ["{{baseUrl}}"],
+              "path": ["vendors"],
+              "query": [
+                {"key": "city", "value": "Bengaluru", "disabled": true},
+                {"key": "category", "value": "plumbing", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Vendor by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/vendors/VENDOR_ID_HERE", "host": ["{{baseUrl}}"], "path": ["vendors", "VENDOR_ID_HERE"]}
+          }
+        },
+        {
+          "name": "[Admin] Create Vendor Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user\": \"USER_OBJECT_ID_HERE\",\n  \"business_name\": \"Elite Electricals\",\n  \"description\": \"Certified electricians for wiring and switchboard installations\",\n  \"phone\": \"+919876540001\",\n  \"email\": \"elite@example.com\",\n  \"service_categories\": [],\n  \"city\": \"Bengaluru\",\n  \"pincode\": \"560001\",\n  \"is_verified\": true\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/vendors", "host": ["{{baseUrl}}"], "path": ["vendors"]}
+          }
+        },
+        {
+          "name": "[Vendor] Update Own Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated service description\",\n  \"is_available\": false\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/vendors/VENDOR_ID_HERE", "host": ["{{baseUrl}}"], "path": ["vendors", "VENDOR_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 Admin - User Management",
+      "item": [
+        {
+          "name": "List All Users",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {
+              "raw": "{{baseUrl}}/users/admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "admin"],
+              "query": [
+                {"key": "role", "value": "vendor", "disabled": true},
+                {"key": "is_active", "value": "true", "disabled": true},
+                {"key": "search", "value": "customer", "disabled": true}
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/users/admin/USER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["users", "admin", "USER_ID_HERE"]}
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new_admin@homico.test\",\n  \"username\": \"new_admin\",\n  \"full_name\": \"New Admin\",\n  \"password\": \"Password123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/users/admin", "host": ["{{baseUrl}}"], "path": ["users", "admin"]}
+          }
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/users/admin/USER_ID_HERE", "host": ["{{baseUrl}}"], "path": ["users", "admin", "USER_ID_HERE"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "🩺 Health Check",
+      "item": [
+        {
+          "name": "API Health",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"]}
+          }
+        }
+      ]
+    }
+  ]
+}
+

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <style>
+    :root {
+      --tile: #050506;
+      --glyph: #FAFAFA;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --tile: #050506;
+        --glyph: #FAFAFA;
+      }
+    }
+    .tile { fill: var(--tile); }
+    .glyph { stroke: var(--glyph); }
+  </style>
+  <!-- Rounded tile -->
+  <rect width="48" height="48" rx="14" class="tile" />
+  <!-- House chevron over H -->
+  <g fill="none" class="glyph" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10.5 22.5 24 11l13.5 11.5"/>
+    <path d="M17 26v11M31 26v11M17 31.5h14"/>
+  </g>
+</svg>
