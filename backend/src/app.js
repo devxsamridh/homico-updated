@@ -91,3 +91,8 @@ export function createApp() {
 
   return app;
 }
+
+// Vercel detects `src/app.js` as the Express entrypoint. Export the app
+// instance directly while keeping `createApp` available for isolated tests.
+const app = createApp();
+export default app;

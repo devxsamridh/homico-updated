@@ -1,11 +1,10 @@
 import { pathToFileURL } from "node:url";
-import { createApp } from "./app.js";
+import app from "./app.js";
 import { connectDB, closeDB } from "./config/db.js";
 import { env } from "./config/env.js";
 
 // Vercel recognizes this default export and invokes it as one Express Function.
 // The listener below only runs for `npm start`, preserving local development.
-const app = createApp();
 export default app;
 
 async function startServer() {
