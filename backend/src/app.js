@@ -16,6 +16,13 @@ export function createApp() {
   // Express strict routing off (Rule C5: trailing slashes tolerated)
   app.set("strict routing", false);
 
+  // Vercel sits in front of the function as a single trusted proxy. This lets
+  // express-rate-limit use the client IP Vercel forwards without trusting
+  // caller-supplied forwarding headers during local development.
+  if (env.NODE_ENV === "production") {
+    app.set("trust proxy", 1);
+  }
+
   // Security headers
   app.use(helmet());
 
