@@ -18,9 +18,10 @@ export function validate({ body, query, params } = {}) {
       }
       next();
     } catch (err) {
-      if (err.errors) {
+      const issues = err.issues ?? err.errors;
+      if (issues) {
         const fieldErrors = {};
-        for (const issue of err.errors) {
+        for (const issue of issues) {
           const path = issue.path.join(".") || "non_field_errors";
           if (!fieldErrors[path]) {
             fieldErrors[path] = [];
@@ -50,4 +51,3 @@ export function validateObjectId(...paramNames) {
     next();
   };
 }
-

@@ -168,12 +168,12 @@ backend/
 ## Prerequisites
 
 - **Node.js ≥ 20** (ESM support required)
-- **MongoDB** running locally on `mongodb://127.0.0.1:27017` (service: MongoDB)
+- **MongoDB** running locally for development, or a reachable managed MongoDB deployment
 
 Verify:
 ```powershell
 node -v                                          # ≥ 20.x
-Test-NetConnection 127.0.0.1 -Port 27017         # TcpTestSucceeded: True
+Test-NetConnection 127.0.0.1 -Port 27017         # Optional local MongoDB check
 ```
 
 ---
@@ -183,42 +183,72 @@ Test-NetConnection 127.0.0.1 -Port 27017         # TcpTestSucceeded: True
 ```powershell
 # 1. Install dependencies
 cd backend
-npm install
+npm ci
 
 # 2. Configure environment
 copy .env.example .env
-# Edit .env and set strong JWT secrets (≥ 32 chars, different values)
+# Replace both JWT placeholders with separate, randomly generated secrets.
+# Set MONGODB_URI to a reachable MongoDB instance.
 
-# 3. Seed database with demo data
-node scripts/seed.js
+# 3. (Optional) Seed a development database. Set SEED_PASSWORD first.
+# Warning: the seed script deletes Homico collections before reseeding.
+$env:SEED_PASSWORD = "choose-a-local-only-demo-password"
+npm run seed
 
-# 4. Start development server
+# 4. Start the development server
 npm run dev
 # Server: http://localhost:8000
-# Health: http://localhost:8000/api/health
+# Liveness: http://localhost:8000/health
+# Database readiness: http://localhost:8000/api/health
 ```
 
 ---
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and update:
+Copy `.env.example` to `.env` for local development and replace its placeholders:
 
-| Variable | Default | Description |
+| Variable | Local value / requirement | Description |
 |---|---|---|
-| `PORT` | `8000` | HTTP port |
-| `NODE_ENV` | `development` | Environment mode |
-| `MONGODB_URI` | `mongodb://127.0.0.1:27017/homico` | MongoDB connection string |
-| `CLIENT_ORIGIN` | `http://localhost:5173` | CORS allowed origin (comma-separate for multiple) |
-| `JWT_ACCESS_SECRET` | *(must set)* | Min 32 chars — access token secret |
-| `JWT_REFRESH_SECRET` | *(must set)* | Min 32 chars — must differ from access secret |
-| `ACCESS_TOKEN_EXPIRES_IN` | `15m` | Access token TTL |
-| `REFRESH_TOKEN_EXPIRES_IN` | `7d` | Refresh token TTL |
-| `BCRYPT_ROUNDS` | `12` | bcrypt cost factor |
-| `SEED_PASSWORD` | `demo_password_123` | Password for all seeded demo accounts |
+| `PORT` | `8000` | HTTP port; hosting providers can supply their expected port |
+| `NODE_ENV` | `development` | Set to `production` on the hosting platform |
+| `MONGODB_URI` | Local URI in the example; required | MongoDB connection string |
+| `CLIENT_ORIGIN` | `http://localhost:5173` | Exact comma-separated browser origins; required in production |
+| `JWT_ACCESS_SECRET` | Replace placeholder | At least 32 characters, randomly generated |
+| `JWT_REFRESH_SECRET` | Replace placeholder | At least 32 characters and different from the access secret |
+| `ACCESS_TOKEN_EXPIRES_IN` | `15m` | Positive JWT duration |
+| `REFRESH_TOKEN_EXPIRES_IN` | `7d` | Positive JWT duration |
+| `BCRYPT_ROUNDS` | `12` | bcrypt cost factor (10–14) |
+| `SEED_PASSWORD` | Set only when seeding | Local-only password for seeded demo accounts |
 
 > [!CAUTION]
-> Never commit `.env` to version control. Use environment variable injection in production.
+> Never use the example JWT values or commit `.env` to version control. Supply production values through the hosting platform's secret/environment settings. Missing or invalid required values fail startup.
+
+`dotenv` reads `backend/.env` relative to the configuration module, not the shell's working directory. On production hosts, variables supplied through the process environment take precedence; no `.env` file is needed.
+
+### Production deployment
+
+The backend has no build or migration step. From the `backend` directory, install with `npm ci` and start with `npm start` (`node src/server.js`). The server listens on the host-provided `PORT` and waits for MongoDB before accepting requests. The app also exports the Express application for compatible serverless adapters, but no specific hosting platform is assumed here.
+
+Configure these values in the hosting platform:
+
+- `NODE_ENV=production`
+- `MONGODB_URI` with a production MongoDB connection URI
+- `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` as separate strong, randomly generated values of at least 32 characters
+- `ACCESS_TOKEN_EXPIRES_IN` and `REFRESH_TOKEN_EXPIRES_IN` (for example `15m` and `7d`)
+- `CLIENT_ORIGIN` with the exact production frontend origin(s), comma-separated if needed
+- `PORT` if it is not injected by the platform
+- `BCRYPT_ROUNDS` if overriding the default
+
+For MongoDB Atlas or another managed database, create a database user with only the required application permissions, use TLS, and allow network access from the hosting provider's outbound IP addresses. Do not use a broad network allowlist unless the provider requires it and the risk is understood. Confirm the production database name and network route before starting the service. If the selected host sits behind a reverse proxy, configure Express `trust proxy` for that host's documented proxy topology before relying on client IP-based rate limits; do not blindly trust arbitrary forwarded headers.
+
+`GET /health` is a liveness check and does not depend on MongoDB. `GET /api/health` is the readiness check; normal API requests also require a database connection. Neither endpoint returns credentials or internal error details.
+
+Common startup failures:
+
+- `Invalid environment configuration`: configure the named variables in the host settings, or copy `.env.example` to `backend/.env` locally and replace the placeholders.
+- `Database unavailable` or connection failure: verify the MongoDB URI, database user, TLS configuration, and provider IP/network allowlist. The application does not verify external database credentials during local-only checks.
+- Browser CORS error: add the exact frontend origin (scheme and host, including port where applicable) to `CLIENT_ORIGIN`.
 
 ---
 
@@ -312,7 +342,8 @@ All routes are prefixed with `/api`. Base URL: `http://localhost:8000`
 
 | Method | Path | Description |
 |---|---|---|
-| GET | `/api/health` | Returns `{ status, db, uptime }` |
+| GET | `/health` | Liveness; returns `{ status: "ok" }` without checking MongoDB |
+| GET | `/api/health` | Database readiness; returns `{ status, db, uptime }` when available |
 
 ---
 
@@ -435,10 +466,10 @@ Tests use Node.js built-in `node:test` + supertest + `mongodb-memory-server` (no
 
 ```powershell
 # Run all tests sequentially (avoids lock file contention)
-node --test tests/transitions.test.js tests/contract.test.js tests/auth.test.js tests/validation.test.js tests/rbac.test.js tests/workflows.test.js
+npm test
 
 # Run a single file
-node --test tests/auth.test.js
+node --import ./tests/envSetup.js --test tests/auth.test.js
 ```
 
 ### Test Files
@@ -451,6 +482,7 @@ node --test tests/auth.test.js
 | `validation.test.js` | ObjectId format, NoSQL injection, malformed JSON, mass assignment |
 | `rbac.test.js` | Customer/vendor/admin permission boundaries and IDOR scenarios |
 | `workflows.test.js` | End-to-end booking → quotation → acceptance, lazy expiry, atomic stock rollback |
+| `env.test.js` | Host-provided environment values, working-directory independence, expiry validation, and missing-variable reporting |
 
 > [!NOTE]
 > Tests run against `mongodb-memory-server` and use a shared singleton to prevent binary download lock contention when multiple suites run concurrently.
@@ -464,6 +496,8 @@ npm run dev          # Start with node --watch (auto-restart on change)
 npm run start        # Production start
 npm run seed         # Wipe and re-seed all collections with demo data
 npm run test         # Run full test suite
+npm audit            # Audit runtime and development dependencies
+npm audit --omit=dev # Audit runtime dependencies only
 npm run db:indexes   # Sync Mongoose indexes to live MongoDB
 npm run explain      # Explain hot queries against seeded data
 ```
@@ -481,12 +515,12 @@ Import both files from `postman/`:
 
 | Role | Email | Password |
 |---|---|---|
-| admin | admin@homico.test | demo_password_123 |
-| customer | customer@homico.test | demo_password_123 |
-| customer (IDOR test) | customer2@homico.test | demo_password_123 |
-| vendor (QuickFix) | vendor1@homico.test | demo_password_123 |
-| vendor (BuildRight) | vendor2@homico.test | demo_password_123 |
-| vendor (Unverified) | vendor3@homico.test | demo_password_123 |
+| admin | admin@homico.test | Value configured in `SEED_PASSWORD` |
+| customer | customer@homico.test | Value configured in `SEED_PASSWORD` |
+| customer (IDOR test) | customer2@homico.test | Value configured in `SEED_PASSWORD` |
+| vendor (QuickFix) | vendor1@homico.test | Value configured in `SEED_PASSWORD` |
+| vendor (BuildRight) | vendor2@homico.test | Value configured in `SEED_PASSWORD` |
+| vendor (Unverified) | vendor3@homico.test | Value configured in `SEED_PASSWORD` |
 
 Login requests auto-set `accessToken` and `refreshToken` collection variables.
 
@@ -503,4 +537,3 @@ See [`docs/COMPATIBILITY.md`](docs/COMPATIBILITY.md) for the full specification 
 - **C4**: Documents expose `id` (string), not `_id`
 - **C8**: Public catalog routes (`/services/*`, `/materials`) don't inspect `Authorization` header
 - **C13**: `/auth/refresh` returns only `{ access }` — no refresh token rotation
-

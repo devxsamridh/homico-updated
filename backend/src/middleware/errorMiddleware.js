@@ -20,7 +20,7 @@ export function errorMiddleware(err, req, res, next) {
     statusCode = 400;
     detail = "Validation failed";
     fieldErrors = {};
-    for (const issue of err.errors) {
+    for (const issue of err.issues ?? err.errors ?? []) {
       const path = issue.path.join(".") || "non_field_errors";
       if (!fieldErrors[path]) fieldErrors[path] = [];
       fieldErrors[path].push(issue.message);
@@ -55,7 +55,9 @@ export function errorMiddleware(err, req, res, next) {
   } else {
     // Unhandled error
     if (process.env.NODE_ENV !== "test") {
-      console.error("Unhandled Error:", err);
+      const name = typeof err?.name === "string" ? err.name : "Error";
+      const code = typeof err?.code === "string" ? `, code: ${err.code}` : "";
+      console.error(`Unhandled API error (${name}${code})`);
     }
     statusCode = 500;
     detail = "Internal server error";
@@ -83,4 +85,3 @@ export function notFoundHandler(req, res, next) {
     message: "Not found",
   });
 }
-

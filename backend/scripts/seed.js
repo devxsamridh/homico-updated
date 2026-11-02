@@ -11,6 +11,12 @@ import { Material } from "../src/models/Material.js";
 import { MaterialOrder } from "../src/models/MaterialOrder.js";
 import { Project } from "../src/models/Project.js";
 
+const seedPassword = process.env.SEED_PASSWORD;
+
+if (!seedPassword) {
+  throw new Error("SEED_PASSWORD is required to run the seed script");
+}
+
 if (env.NODE_ENV === "production") {
   console.error("❌ Refusing to seed in production environment!");
   process.exit(1);
@@ -39,7 +45,7 @@ async function seed() {
   }
   console.log(" Cleaned existing collections & synced indexes.");
 
-  const passwordHash = await bcrypt.hash(env.SEED_PASSWORD, 10);
+  const passwordHash = await bcrypt.hash(seedPassword, 10);
 
   // 1. Users
   console.log("Seeding users...");
@@ -606,12 +612,12 @@ async function seed() {
   console.log("🎉 SEED COMPLETED SUCCESSFULLY! DEMO CREDENTIALS TABLE:");
   console.log("========================================================");
   console.table([
-    { Role: "admin", Email: "admin@homico.test", Password: env.SEED_PASSWORD },
-    { Role: "customer", Email: "customer@homico.test", Password: env.SEED_PASSWORD },
-    { Role: "customer (IDOR)", Email: "customer2@homico.test", Password: env.SEED_PASSWORD },
-    { Role: "vendor (QuickFix)", Email: "vendor1@homico.test", Password: env.SEED_PASSWORD },
-    { Role: "vendor (BuildRight)", Email: "vendor2@homico.test", Password: env.SEED_PASSWORD },
-    { Role: "vendor (Unverified)", Email: "vendor3@homico.test", Password: env.SEED_PASSWORD },
+    { Role: "admin", Email: "admin@homico.test", Password: "[configured by SEED_PASSWORD]" },
+    { Role: "customer", Email: "customer@homico.test", Password: "[configured by SEED_PASSWORD]" },
+    { Role: "customer (IDOR)", Email: "customer2@homico.test", Password: "[configured by SEED_PASSWORD]" },
+    { Role: "vendor (QuickFix)", Email: "vendor1@homico.test", Password: "[configured by SEED_PASSWORD]" },
+    { Role: "vendor (BuildRight)", Email: "vendor2@homico.test", Password: "[configured by SEED_PASSWORD]" },
+    { Role: "vendor (Unverified)", Email: "vendor3@homico.test", Password: "[configured by SEED_PASSWORD]" },
   ]);
   console.log("========================================================\n");
 

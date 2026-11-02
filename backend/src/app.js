@@ -4,9 +4,11 @@ import cors from "cors";
 import compression from "compression";
 import morgan from "morgan";
 import { env } from "./config/env.js";
+import { connectDB } from "./config/db.js";
 import routes from "./routes/index.js";
 import { globalLimiter } from "./middleware/rateLimiters.js";
 import { errorMiddleware, notFoundHandler } from "./middleware/errorMiddleware.js";
+import { ApiError } from "./utils/ApiError.js";
 
 export function createApp() {
   const app = express();
@@ -26,7 +28,7 @@ export function createApp() {
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true);
         } else {
-          callback(new Error("Not allowed by CORS"));
+          callback(new ApiError(403, "Origin not allowed"));
         }
       },
       methods: ["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
@@ -49,6 +51,27 @@ export function createApp() {
   // Rate limiter
   app.use(globalLimiter);
 
+  // Liveness check is independent of MongoDB and suitable for basic process monitoring.
+  app.get("/health", (req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
+  // Liveness must not depend on MongoDB; `/api/health` remains the DB-backed
+  // readiness check registered by the API router below.
+  app.get("/api/health/live", (req, res) => {
+    res.status(200).json({ status: "ok" });
+  });
+
+  // Reuses a module-scoped Mongoose connection on warm Vercel invocations.
+  app.use(async (req, res, next) => {
+    try {
+      await connectDB();
+      next();
+    } catch {
+      next(new ApiError(503, "Database unavailable"));
+    }
+  });
+
   // Cache-Control default for authenticated requests
   app.use((req, res, next) => {
     if (req.headers.authorization) {
@@ -68,4 +91,3 @@ export function createApp() {
 
   return app;
 }
-

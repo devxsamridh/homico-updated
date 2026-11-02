@@ -92,10 +92,13 @@ describe("Frontend Compatibility Contract Tests", () => {
   it("Rule C5: Works with and without trailing slash", async () => {
     const withSlash = await request(app).get("/api/health/");
     const withoutSlash = await request(app).get("/api/health");
+    const rootHealth = await request(app).get("/health");
     assert.equal(withSlash.status, 200);
     assert.equal(withoutSlash.status, 200);
+    assert.equal(rootHealth.status, 200);
     assert.equal(withSlash.body.status, "ok");
     assert.equal(withoutSlash.body.status, "ok");
+    assert.equal(rootHealth.body.status, "ok");
   });
 
   it("Rule C10: GET /services/categories/ returns nested items array", async () => {
@@ -160,4 +163,3 @@ describe("Frontend Compatibility Contract Tests", () => {
     assert.equal(doc.password_hash, undefined);
   });
 });
-
