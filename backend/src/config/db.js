@@ -14,8 +14,20 @@ export async function connectDB(uri = env.MONGODB_URI) {
     return mongoose.connection;
   } catch (error) {
     const name = typeof error?.name === "string" ? error.name : "Error";
-    const code = typeof error?.code === "string" ? ` (${error.code})` : "";
-    console.error(`MongoDB connection failed (${name}${code})`);
+    const code = typeof error?.code === "string" ? error.code : undefined;
+    const syscall = typeof error?.syscall === "string" ? error.syscall : undefined;
+    const hostname = typeof error?.hostname === "string" ? error.hostname : undefined;
+    const details = [
+      code ? `code: ${code}` : "",
+      syscall ? `syscall: ${syscall}` : "",
+      hostname ? `hostname: ${hostname}` : "",
+    ]
+      .filter(Boolean)
+      .join(", ");
+
+    const errorDetails = details ? ` (${details})` : "";
+    const causeMsg = error?.cause?.message ? ` | Cause: ${error.cause.message}` : "";
+    console.error(`MongoDB connection failed: [${name}] ${error?.message || "Unknown error"}${errorDetails}${causeMsg}`);
     throw error;
   } finally {
     if (mongoose.connection.readyState !== 2) connectionPromise = undefined;

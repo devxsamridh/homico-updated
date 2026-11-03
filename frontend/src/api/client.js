@@ -1,7 +1,11 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, setTokens, clearTokens } from "../utils/storage.js";
 
-const baseURL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const baseURL = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "http://localhost:8000/api" : "");
+
+if (!baseURL) {
+  throw new Error("VITE_API_URL is required for a production frontend build");
+}
 
 /**
  * Shared axios instance.

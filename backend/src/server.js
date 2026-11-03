@@ -8,8 +8,8 @@ import { env } from "./config/env.js";
 export default app;
 
 async function startServer() {
-  await connectDB();
-  console.log(" Connected to MongoDB");
+  const conn = await connectDB();
+  console.log(` Connected to MongoDB (database: ${conn.name})`);
 
   const server = app.listen(env.PORT, () => {
     console.log(` Homico Backend listening on port ${env.PORT}`);
@@ -60,7 +60,8 @@ async function startServer() {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   startServer().catch((error) => {
     const name = typeof error?.name === "string" ? error.name : "Error";
-    console.error(`Failed to start server (${name})`);
+    const code = typeof error?.code === "string" ? ` [${error.code}]` : "";
+    console.error(`Failed to start server (${name}${code}):`, error?.message || error);
     process.exit(1);
   });
 }
