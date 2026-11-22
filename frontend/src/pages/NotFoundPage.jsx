@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom";
 import Reveal from "../components/Reveal.jsx";
 import { HouseLine } from "@phosphor-icons/react";
+import { Button } from "../components/Button.jsx";
 
 export default function NotFoundPage() {
   return (
-    <div className="container mx-auto px-4 py-24 text-center">
+    <div className="container mx-auto max-w-7xl px-4 py-3 text-center lg:py-4">
       <Reveal className="max-w-md mx-auto">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-3xl bg-primary/10 text-primary dark:bg-primary/20">
           <HouseLine size={32} weight="duotone" />
@@ -14,12 +14,9 @@ export default function NotFoundPage() {
         <p className="mt-2 text-sm text-ink-muted">
           The page you are looking for does not exist or has been moved.
         </p>
-        <Link
-          to="/"
-          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:bg-primary-strong hover:shadow-glow"
-        >
+        <Button to="/" size="md" className="mt-6">
           Return Home
-        </Link>
+        </Button>
       </Reveal>
     </div>
   );

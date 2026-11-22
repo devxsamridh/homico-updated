@@ -12,6 +12,7 @@ import {
 import { useAuth } from "../context/AuthContext.jsx";
 import { useTheme } from "../context/ThemeContext.jsx";
 import Logo from "./Logo.jsx";
+import { Button, IconButton } from "./Button.jsx";
 
 const NAV_LINKS = [
   { to: "/",          label: "Home",          end: true },
@@ -59,9 +60,6 @@ export default function Navbar() {
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
-  const iconBtn =
-    "inline-flex h-9 w-9 items-center justify-center rounded-xl text-ink-muted transition-colors duration-200 hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary";
-
   return (
     <>
       {/* Skip to content */}
@@ -75,7 +73,7 @@ export default function Navbar() {
         }`}
       >
         <nav
-          className="container mx-auto flex h-[4.25rem] items-center justify-between gap-4 px-4 md:px-6"
+          className="container mx-auto max-w-7xl flex h-[4.25rem] items-center justify-between gap-4 px-4 md:px-6"
           aria-label="Primary navigation"
         >
           <Logo />
@@ -89,7 +87,7 @@ export default function Navbar() {
                 end={link.end}
                 role="listitem"
                 className={({ isActive }) =>
-                  `relative rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                  `relative rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                     isActive
                       ? "bg-ink/10 text-ink"
                       : "text-ink-muted hover:bg-ink/5 hover:text-ink"
@@ -104,53 +102,70 @@ export default function Navbar() {
           {/* Right controls */}
           <div className="flex items-center gap-2">
             {/* Theme toggle */}
-            <button onClick={toggle} aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`} className={iconBtn}>
+            <IconButton
+              onClick={toggle}
+              size="sm"
+              variant="secondary"
+              aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+            >
               {theme === "dark"
-                ? <SunDim size={20} weight="duotone" />
-                : <Moon size={20} weight="duotone" />
+                ? <SunDim size={18} weight="duotone" />
+                : <Moon size={18} weight="duotone" />
               }
-            </button>
+            </IconButton>
 
             {user ? (
               <>
-                <Link
+                <Button
                   to="/dashboard"
-                  className="hidden items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-strong hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:flex"
+                  size="sm"
+                  variant="primary"
+                  className="hidden sm:inline-flex"
                 >
-                  <User size={16} weight="duotone" />
-                  Dashboard
-                </Link>
-                <button onClick={logout} aria-label="Sign out" className={iconBtn}>
-                  <SignOut size={20} weight="duotone" />
-                </button>
+                  <User size={15} weight="duotone" />
+                  <span>Dashboard</span>
+                </Button>
+                <IconButton
+                  onClick={logout}
+                  size="sm"
+                  variant="secondary"
+                  aria-label="Sign out"
+                >
+                  <SignOut size={18} weight="duotone" />
+                </IconButton>
               </>
             ) : (
               <>
-                <Link
+                <Button
                   to="/login"
-                  className="hidden rounded-xl px-4 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:inline-flex"
+                  size="sm"
+                  variant="ghost"
+                  className="hidden sm:inline-flex"
                 >
                   Sign in
-                </Link>
-                <Link
+                </Button>
+                <Button
                   to="/register"
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-strong hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  size="sm"
+                  variant="primary"
                 >
                   Get started
-                </Link>
+                </Button>
               </>
             )}
 
             {/* Hamburger (mobile) */}
-            <button
-              className={`${iconBtn} md:hidden`}
+            <IconButton
+              size="sm"
+              variant="secondary"
+              className="md:hidden"
               aria-label={mobileOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileOpen}
               aria-controls="mobile-menu"
               onClick={() => setMobileOpen((o) => !o)}
             >
-              {mobileOpen ? <X size={20} weight="bold" /> : <List size={20} weight="bold" />}
-            </button>
+              {mobileOpen ? <X size={18} weight="bold" /> : <List size={18} weight="bold" />}
+            </IconButton>
           </div>
         </nav>
       </header>
@@ -173,7 +188,7 @@ export default function Navbar() {
             <motion.div
               id="mobile-menu"
               ref={mobileMenuRef}
-              className="fixed inset-x-0 top-[4.25rem] z-40 mx-4 rounded-3xl border border-line bg-surface p-5 shadow-soft-lg md:hidden"
+              className="fixed inset-x-0 top-[4.25rem] z-40 mx-4 rounded-3xl border border-line bg-surface p-5 shadow-soft-lg dark:bg-surface/90 dark:backdrop-blur-md md:hidden"
               initial={{ opacity: 0, y: -12, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.97 }}
@@ -188,7 +203,7 @@ export default function Navbar() {
                     to={link.to}
                     end={link.end}
                     className={({ isActive }) =>
-                      `rounded-xl px-4 py-3 text-sm font-medium transition-colors ${
+                      `rounded-full px-4 py-3 text-sm font-medium transition-colors ${
                         isActive
                           ? "bg-ink/10 text-ink"
                           : "text-ink-muted hover:bg-surface-muted hover:text-ink"
@@ -203,35 +218,43 @@ export default function Navbar() {
 
                 {user ? (
                   <>
-                    <Link
+                    <Button
                       to="/dashboard"
-                      className="flex items-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
+                      variant="primary"
+                      size="md"
+                      className="w-full justify-center"
                     >
                       <User size={16} weight="duotone" />
-                      Dashboard
-                    </Link>
-                    <button
+                      <span>Dashboard</span>
+                    </Button>
+                    <Button
                       onClick={logout}
-                      className="flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
+                      variant="ghost"
+                      size="md"
+                      className="w-full justify-center"
                     >
                       <SignOut size={16} weight="duotone" />
-                      Sign out
-                    </button>
+                      <span>Sign out</span>
+                    </Button>
                   </>
                 ) : (
                   <>
-                    <Link
+                    <Button
                       to="/login"
-                      className="rounded-xl px-4 py-3 text-sm font-medium text-ink-muted hover:bg-surface-muted hover:text-ink"
+                      variant="ghost"
+                      size="md"
+                      className="w-full justify-center"
                     >
                       Sign in
-                    </Link>
-                    <Link
+                    </Button>
+                    <Button
                       to="/register"
-                      className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
+                      variant="primary"
+                      size="md"
+                      className="w-full justify-center"
                     >
                       Get started
-                    </Link>
+                    </Button>
                   </>
                 )}
               </nav>

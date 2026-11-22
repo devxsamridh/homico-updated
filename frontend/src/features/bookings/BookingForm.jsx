@@ -63,18 +63,20 @@ export default function BookingForm({ service, onClose }) {
               You can track technician visit progress in your Dashboard.
             </p>
             <div className="mt-5 flex justify-center gap-3">
-              <a
-                href="/dashboard"
-                className="rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white shadow-soft hover:bg-primary-dark"
+              <Button
+                to="/dashboard"
+                size="sm"
+                variant="primary"
               >
                 Go to Dashboard
-              </a>
-              <button
+              </Button>
+              <Button
                 onClick={onClose}
-                className="rounded-xl border border-border-muted px-4 py-2 text-xs font-semibold text-ink-muted hover:text-ink"
+                size="sm"
+                variant="secondary"
               >
                 Close
-              </button>
+              </Button>
             </div>
           </div>
         ) : (
@@ -104,8 +106,8 @@ export default function BookingForm({ service, onClose }) {
               onChange={handle("problem")}
             />
             {error && <p className="col-span-2 text-xs font-medium text-red-500">{error}</p>}
-            <Button type="submit" disabled={submitting} className="col-span-2 mt-2">
-              {submitting ? "Booking…" : "Confirm Booking"}
+            <Button type="submit" loading={submitting} disabled={submitting} size="md" className="col-span-2 mt-2 w-full">
+              Confirm Booking
             </Button>
           </form>
         )}

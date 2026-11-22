@@ -4,14 +4,14 @@ import Reveal from "../components/Reveal.jsx";
 
 export default function LoginPage() {
   return (
-    <div className="container mx-auto max-w-md px-4 py-16">
-      <Reveal className="card-surface p-8 shadow-soft">
+    <div className="container mx-auto max-w-7xl px-4 py-3 lg:py-4">
+      <Reveal className="card-surface mx-auto max-w-md p-4 shadow-soft sm:p-5">
         <h1 className="text-2xl font-extrabold text-ink">Sign in</h1>
         <p className="mt-1 text-sm text-ink-muted">Welcome back to Homico.</p>
-        <div className="mt-6">
+        <div className="mt-4">
           <LoginForm />
         </div>
-        <p className="mt-6 text-center text-sm text-ink-muted">
+        <p className="mt-4 text-center text-sm text-ink-muted">
           New here?{" "}
           <Link to="/register" className="font-semibold text-primary hover:underline">
             Create an account

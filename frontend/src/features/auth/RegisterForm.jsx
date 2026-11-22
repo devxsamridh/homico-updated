@@ -28,27 +28,27 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="grid gap-2 sm:grid-cols-2">
       <Field label="Full name" value={form.full_name} onChange={handle("full_name")} required />
       <Field label="Username" value={form.username} onChange={handle("username")} required />
       <Field label="Email" type="email" value={form.email} onChange={handle("email")} required />
       <Field label="Phone" value={form.phone} onChange={handle("phone")} />
-      <Field label="Password" type="password" value={form.password} onChange={handle("password")} required />
-      {error && <p className="text-sm font-medium text-red-500">{error}</p>}
-      <Button type="submit" disabled={submitting} className="w-full">
-        {submitting ? "Creating…" : "Create account"}
+      <Field className="sm:col-span-2" label="Password" type="password" value={form.password} onChange={handle("password")} required />
+      {error && <p className="text-sm font-medium text-red-500 sm:col-span-2">{error}</p>}
+      <Button type="submit" loading={submitting} disabled={submitting} size="md" className="w-full sm:col-span-2">
+        Create account
       </Button>
     </form>
   );
 }
 
-function Field({ label, ...props }) {
+function Field({ label, className = "", ...props }) {
   return (
-    <label className="block">
-      <span className="text-sm font-medium text-ink">{label}</span>
+    <label className={`block ${className}`}>
+      <span className="text-xs font-medium text-ink">{label}</span>
       <input
         {...props}
-        className="mt-1 input-base"
+        className="mt-0.5 input-base py-1.5"
       />
     </label>
   );

@@ -4,6 +4,7 @@ import { servicesApi } from "../api/services.js";
 import Card from "../components/Card.jsx";
 import BookingForm from "../features/bookings/BookingForm.jsx";
 import Reveal, { RevealItem } from "../components/Reveal.jsx";
+import { Button } from "../components/Button.jsx";
 import {
   MagnifyingGlass,
   Wrench,
@@ -63,7 +64,7 @@ export default function ServicesPage() {
   }, [rawCategories, activeCategory, searchQuery]);
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto max-w-7xl px-4 py-12 lg:py-16">
       {/* Header section */}
       <Reveal className="max-w-2xl">
         <span className="badge border border-line bg-surface-muted text-ink">
@@ -95,43 +96,46 @@ export default function ServicesPage() {
             className="input-base pl-10 pr-14 shadow-soft-xs"
           />
           {searchQuery && (
-            <button
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
               onClick={() => setSearchQuery("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-ink-faint hover:text-ink"
+              className="absolute right-3 top-1/2 -translate-y-1/2 px-2 text-xs font-medium text-ink-faint hover:text-ink"
             >
               Clear
-            </button>
+            </Button>
           )}
         </div>
 
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center gap-2 overflow-x-auto pb-1">
-          <button
+          <Button
+            type="button"
+            size="sm"
+            variant={activeCategory === "all" ? "primary" : "secondary"}
+            aria-pressed={activeCategory === "all"}
             onClick={() => setActiveCategory("all")}
-            className={`rounded-xl px-4 py-2 text-xs font-semibold transition-all ${
-              activeCategory === "all"
-                ? "bg-primary text-primary-foreground shadow-soft"
-                : "border border-line bg-surface text-ink-muted hover:border-ink/30 hover:text-ink"
-            }`}
+            className="text-xs"
           >
             All Categories
-          </button>
+          </Button>
           {rawCategories.map((c) => {
             const Icon = CATEGORY_ICONS[c.slug] || Wrench;
             const isActive = activeCategory === c.slug;
             return (
-              <button
+              <Button
                 key={c.id}
+                type="button"
+                size="sm"
+                variant={isActive ? "primary" : "secondary"}
+                aria-pressed={isActive}
                 onClick={() => setActiveCategory(c.slug)}
-                className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition-all ${
-                  isActive
-                    ? "bg-primary text-primary-foreground shadow-soft"
-                    : "border border-line bg-surface text-ink-muted hover:border-ink/30 hover:text-ink"
-                }`}
+                className="gap-1.5 text-xs"
               >
                 <Icon size={14} weight="duotone" />
                 {c.name}
-              </button>
+              </Button>
             );
           })}
         </div>
@@ -165,15 +169,17 @@ export default function ServicesPage() {
         <div className="mt-12 rounded-2xl border border-dashed border-line p-12 text-center">
           <p className="text-base font-semibold text-ink">No services found</p>
           <p className="mt-1 text-sm text-ink-muted">Try adjusting your search query or switching categories.</p>
-          <button
+          <Button
+            size="sm"
+            variant="primary"
             onClick={() => {
               setActiveCategory("all");
               setSearchQuery("");
             }}
-            className="mt-4 rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-soft hover:bg-primary-strong"
+            className="mt-4"
           >
             Reset Filters
-          </button>
+          </Button>
         </div>
       )}
 
@@ -219,12 +225,14 @@ export default function ServicesPage() {
                             )}
                           </div>
                         </div>
-                        <button
+                        <Button
+                          size="sm"
+                          variant="primary"
                           onClick={() => setSelected(item)}
-                          className="shrink-0 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-soft transition-all hover:bg-primary-strong hover:shadow-glow"
+                          className="shrink-0 h-8 px-3.5 text-xs"
                         >
                           Book Visit
-                        </button>
+                        </Button>
                       </li>
                     ))}
                   </ul>

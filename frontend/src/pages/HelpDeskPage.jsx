@@ -13,6 +13,7 @@ import {
   Hammer,
 } from "@phosphor-icons/react";
 import Reveal, { RevealItem } from "../components/Reveal.jsx";
+import { Button } from "../components/Button.jsx";
 import { SUPPORT_EMAIL } from "../config/site.js";
 
 /* ── FAQ data ── */
@@ -73,8 +74,10 @@ const STATUS_GUIDE = [
 function FaqItem({ question, answer, isOpen, onClick }) {
   return (
     <div className="border-b border-border-muted last:border-0">
-      <button
-        className="flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-semibold text-ink transition-colors hover:text-primary focus-visible:outline-none focus-visible:text-primary"
+      <Button
+        type="button"
+        variant="ghost"
+        className="h-auto min-h-[44px] w-full justify-between rounded-none px-0 py-3 text-left text-sm font-semibold text-ink hover:text-primary focus-visible:text-primary"
         onClick={onClick}
         aria-expanded={isOpen}
       >
@@ -82,7 +85,7 @@ function FaqItem({ question, answer, isOpen, onClick }) {
         <span className="shrink-0 text-ink-faint">
           {isOpen ? <CaretUp size={16} weight="bold" /> : <CaretDown size={16} weight="bold" />}
         </span>
-      </button>
+      </Button>
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
@@ -118,7 +121,7 @@ export default function HelpDeskPage() {
   const mailtoHref = `mailto:${SUPPORT_EMAIL}?subject=Homico%20Support%20Request&body=Hi%20Homico%20Team%2C%0A%0APlease%20describe%20your%20issue%20here%3A%0A%0A`;
 
   return (
-    <div className="container mx-auto px-4 py-16 max-w-4xl">
+    <div className="container mx-auto max-w-4xl px-4 py-6 lg:py-8">
       {/* Header */}
       <Reveal className="text-center">
         <span className="badge border border-primary/30 bg-primary/10 text-primary dark:bg-primary/20">
@@ -132,7 +135,7 @@ export default function HelpDeskPage() {
         </p>
 
         {/* Search */}
-        <div className="relative mx-auto mt-8 max-w-lg">
+        <div className="relative mx-auto mt-6 max-w-lg">
           <MagnifyingGlass
             size={18}
             weight="duotone"
@@ -149,7 +152,7 @@ export default function HelpDeskPage() {
         </div>
       </Reveal>
 
-      <div className="mt-16 grid gap-10 lg:grid-cols-3">
+      <div className="mt-6 grid gap-6 lg:grid-cols-3">
         {/* ── FAQ Accordion ── */}
         <section className="lg:col-span-2" aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="mb-6 text-heading font-bold text-ink">
@@ -159,12 +162,15 @@ export default function HelpDeskPage() {
           {filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border-muted p-10 text-center">
               <p className="text-ink-muted">No questions match "{search}".</p>
-              <button
+              <Button
+                type="button"
+                size="sm"
+                variant="ghost"
                 onClick={() => setSearch("")}
-                className="mt-3 text-sm font-medium text-primary hover:underline focus-visible:outline-none"
+                className="mt-3 text-sm font-medium text-primary hover:underline"
               >
                 Clear search
-              </button>
+              </Button>
             </div>
           ) : (
             <div className="card-surface px-6 py-2">
@@ -193,13 +199,15 @@ export default function HelpDeskPage() {
               <p className="mt-1 text-sm text-ink-muted leading-relaxed">
                 Can't find what you need? Send us an email and we'll get back to you.
               </p>
-              <a
+              <Button
+                variant="primary"
+                size="md"
                 href={mailtoHref}
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-strong hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="mt-4 w-full"
               >
                 <Envelope size={16} weight="duotone" />
-                Email us
-              </a>
+                <span>Email us</span>
+              </Button>
               <p className="mt-3 text-center text-xs text-ink-faint">
                 Opens your default mail app
               </p>
@@ -219,9 +227,9 @@ export default function HelpDeskPage() {
       </div>
 
       {/* ── Booking Status Guide ── */}
-      <section className="mt-16" aria-labelledby="status-heading">
+      <section className="mt-6" aria-labelledby="status-heading">
         <Reveal>
-          <h2 id="status-heading" className="mb-8 text-heading font-bold text-ink">
+          <h2 id="status-heading" className="mb-4 text-heading font-bold text-ink">
             Understanding your booking status
           </h2>
         </Reveal>
@@ -242,4 +250,3 @@ export default function HelpDeskPage() {
     </div>
   );
 }
-

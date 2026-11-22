@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar.jsx";
 import Footer from "./components/Footer.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OfferModal from "./components/OfferModal.jsx";
+import BackgroundFX from "./components/background/BackgroundFX.jsx";
 
 /* ── Lazy-loaded pages ──────────────────────────────────────────────────── */
 const HomePage      = lazy(() => import("./pages/HomePage.jsx"));
@@ -36,37 +37,40 @@ export default function App() {
   const location = useLocation();
 
   return (
-    <div className="flex min-h-screen flex-col bg-bg">
-      <Navbar />
+    <div className="relative isolate flex min-h-[100svh] flex-col bg-transparent">
+      <BackgroundFX />
+      <div className="relative z-10 flex min-h-[100svh] flex-1 flex-col">
+        <Navbar />
 
-      <main id="main-content" className="flex-1">
-        <Suspense fallback={<PageFallback />}>
-          <AnimatePresence mode="wait" initial={false}>
-            <Routes location={location} key={location.pathname}>
-              <Route path="/"          element={<HomePage />} />
-              <Route path="/services"  element={<ServicesPage />} />
-              <Route path="/materials" element={<MaterialsPage />} />
-              <Route path="/login"     element={<LoginPage />} />
-              <Route path="/register"  element={<RegisterPage />} />
-              <Route path="/help"      element={<HelpDeskPage />} />
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </AnimatePresence>
-        </Suspense>
-      </main>
+        <main id="main-content" className="flex-1">
+          <Suspense fallback={<PageFallback />}>
+            <AnimatePresence mode="wait" initial={false}>
+              <Routes location={location} key={location.pathname}>
+                <Route path="/"          element={<HomePage />} />
+                <Route path="/services"  element={<ServicesPage />} />
+                <Route path="/materials" element={<MaterialsPage />} />
+                <Route path="/login"     element={<LoginPage />} />
+                <Route path="/register"  element={<RegisterPage />} />
+                <Route path="/help"      element={<HelpDeskPage />} />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </AnimatePresence>
+          </Suspense>
+        </main>
 
-      <Footer />
+        <Footer />
 
-      {/* Offer modal — shown 3.5s after first visit, gated 24h */}
-      <OfferModal />
+        {/* Offer modal — shown 3.5s after first visit, gated 24h */}
+        <OfferModal />
+      </div>
     </div>
   );
 }

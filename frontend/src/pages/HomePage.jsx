@@ -1,6 +1,6 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import { Link } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Wrench,
   Truck,
@@ -17,11 +17,10 @@ import {
 import ServiceCard from "../components/ServiceCard.jsx";
 import Reveal, { RevealItem } from "../components/Reveal.jsx";
 import AnimatedPill from "../components/hero/AnimatedPill.jsx";
+import { Button } from "../components/Button.jsx";
+import { useMotionPreference } from "../context/MotionPreferenceContext.jsx";
 
 // Lazy-load heavier visual elements of the hero to keep initial bundle optimal
-const HeroBackgroundEffect = lazy(
-  () => import("../components/hero/HeroBackgroundEffect.jsx")
-);
 const HomicoAppMock = lazy(() => import("../components/hero/HomicoAppMock.jsx"));
 
 /* ── Content Data ── */
@@ -84,7 +83,7 @@ const VALUE_PROPS = [
 function StepCard({ icon: Icon, step, title, desc }) {
   return (
     <RevealItem>
-      <div className="relative flex flex-col gap-4 rounded-3xl border border-line bg-surface p-6 shadow-soft-xs transition-all duration-200 hover:shadow-soft hover:border-ink/20">
+      <div className="relative flex flex-col gap-4 rounded-3xl border border-line bg-surface dark:bg-surface/75 p-6 shadow-soft-xs backdrop-blur-md transition-all duration-200 hover:shadow-soft hover:border-ink/20">
         <div className="flex items-center justify-between">
           <span className="text-5xl font-black text-ink/10 select-none">
             {step}
@@ -103,24 +102,19 @@ function StepCard({ icon: Icon, step, title, desc }) {
 }
 
 export default function HomePage() {
-  const shouldReduceMotion = useReducedMotion();
-  const [manualSimplified, setManualSimplified] = useState(false);
-  const isReduced = shouldReduceMotion || manualSimplified;
+  const { isSimplified, isReducedMotion, toggleSimplified } =
+    useMotionPreference();
+  const isReduced = isReducedMotion || isSimplified;
 
   return (
     <>
       {/* ── Reference-Inspired Clean Hero Section ────────────────── */}
       <section
-        className="hero-spectrum relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-32"
+        className="hero-spectrum home-page-hero relative overflow-hidden pt-8 pb-8 md:pt-12 md:pb-12 lg:pt-12 lg:pb-14"
         aria-label="Homico Introduction"
         data-simplified={isReduced ? "true" : undefined}
       >
-        {/* Ambient background glow & grid lines (lazy loaded) */}
-        <Suspense fallback={null}>
-          <HeroBackgroundEffect />
-        </Suspense>
-
-        <div className="container relative z-10 mx-auto px-4 sm:px-6">
+        <div className="container relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
             {/* Top Badge / Animated Pill */}
             <div className="mb-6 flex justify-center">
@@ -156,7 +150,9 @@ export default function HomePage() {
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
-              Book <span className="hl hl-1">on-demand home services</span>, source <span className="hl hl-3">raw materials</span>, hire <span className="hl hl-2">architects</span>
+              Book <span className="hl hl-1">on-demand home services</span>, source{" "}
+              <span className="hl hl-3">raw materials</span>, hire{" "}
+              <span className="hl hl-2">architects</span>{" "}
               and manage <span className="hl hl-4">full home construction</span> from one app.
             </motion.p>
 
@@ -171,26 +167,28 @@ export default function HomePage() {
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
-              {/* Primary action: Solid primary, text-primary-foreground */}
-              <Link
+              {/* Primary action: Solid primary pill with trailing circle chip for arrow */}
+              <Button
                 to="/services"
-                className="spectrum-primary group relative flex h-14 w-full sm:w-auto min-w-[210px] items-center justify-center gap-2.5 rounded-2xl bg-primary px-7 text-sm font-bold text-primary-foreground shadow-soft transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
+                size="lg"
+                variant="primary"
+                className="w-full sm:w-auto min-w-[220px] justify-between pl-8 pr-3"
               >
                 <span>Explore Services</span>
-                <ArrowRight
-                  size={16}
-                  weight="bold"
-                  className="transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </Link>
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#09090b] text-white transition-transform duration-200 group-hover:translate-x-0.5">
+                  <ArrowRight size={14} weight="bold" />
+                </span>
+              </Button>
 
-              {/* Secondary action: border-line, bg-surface */}
-              <Link
+              {/* Secondary action: glass pill */}
+              <Button
                 to="/materials"
-                className="flex h-14 w-full sm:w-auto min-w-[210px] items-center justify-center gap-2 rounded-2xl border border-line bg-surface px-7 text-sm font-semibold text-ink shadow-soft-xs backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-surface-muted hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-[0.98]"
+                size="lg"
+                variant="secondary"
+                className="w-full sm:w-auto min-w-[200px]"
               >
                 <span>Order Materials</span>
-              </Link>
+              </Button>
             </motion.div>
 
             {/* Value Props Row */}
@@ -214,34 +212,38 @@ export default function HomePage() {
             {/* Accessibility / simplified version toggle */}
             <div className="mt-4 text-[11px] text-ink-faint">
               <span>Looking for reduced animation? </span>
-              <button
+              <Button
                 type="button"
-                onClick={() => setManualSimplified((prev) => !prev)}
+                size="sm"
+                variant="ghost"
+                onClick={toggleSimplified}
                 className="underline underline-offset-2 hover:text-ink focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary"
               >
-                {manualSimplified
+                {isSimplified
                   ? "Turn animations back on"
                   : "Switch to simplified version"}
-              </button>
+              </Button>
             </div>
           </div>
 
           {/* Large Visual Below Copy: Homico Application Mock */}
-          <div className="mt-14 md:mt-20">
+          <div className="mt-8 md:mt-10">
             <Suspense
               fallback={
-                <div className="mx-auto h-[400px] w-full max-w-5xl rounded-3xl border border-line bg-surface-muted skeleton" />
+                <div className="mx-auto h-[360px] w-full max-w-5xl rounded-3xl border border-line bg-surface-muted skeleton" />
               }
             >
-              <HomicoAppMock isReducedMotion={isReduced} />
+              <div className="lg:origin-top lg:scale-[0.8] lg:-mb-24">
+                <HomicoAppMock isReducedMotion={isReduced} />
+              </div>
             </Suspense>
           </div>
         </div>
       </section>
 
       {/* ── What we offer ─────────────────────────────────────────────── */}
-      <section className="container mx-auto px-4 py-20" aria-labelledby="services-heading">
-        <Reveal className="text-center mb-12">
+      <section className="home-page-section container mx-auto max-w-7xl px-4 py-8 lg:py-10" aria-labelledby="services-heading">
+        <Reveal className="mb-8 text-center">
           <h2 id="services-heading" className="text-heading-lg font-bold text-ink">
             Everything you need, in one place
           </h2>
@@ -259,11 +261,11 @@ export default function HomePage() {
 
       {/* ── How it works ──────────────────────────────────────────────── */}
       <section
-        className="py-20 bg-surface-muted border-y border-line"
+        className="home-page-section border-y border-line bg-surface-muted py-8 dark:bg-surface-muted/65 lg:py-10"
         aria-labelledby="how-heading"
       >
-        <div className="container mx-auto px-4">
-          <Reveal className="text-center mb-14">
+        <div className="container mx-auto max-w-7xl px-4">
+          <Reveal className="mb-8 text-center">
             <h2 id="how-heading" className="text-heading-lg font-bold text-ink">
               How it works
             </h2>
@@ -281,9 +283,9 @@ export default function HomePage() {
       </section>
 
       {/* ── CTA Banner ────────────────────────────────────────────────── */}
-      <section className="container mx-auto px-4 py-20">
+      <section className="home-page-section container mx-auto max-w-7xl px-4 py-8 lg:py-10">
         <Reveal>
-          <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-10 text-center text-ink shadow-soft-lg md:p-16">
+          <div className="relative overflow-hidden rounded-3xl border border-line bg-surface p-8 text-center text-ink shadow-soft-lg backdrop-blur-md dark:bg-surface/80 md:p-12">
             {/* Subtle monochrome ambient light inside banner */}
             <div
               className="pointer-events-none absolute -right-8 -top-8 h-48 w-48 rounded-full bg-white/[0.04] blur-2xl"
@@ -301,19 +303,21 @@ export default function HomePage() {
               Start with a flat ₹89 inspection visit. No obligation — just a transparent quote from a verified professional.
             </p>
             <div className="relative mt-8 flex flex-wrap justify-center gap-3">
-              <Link
+              <Button
                 to="/register"
-                className="inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                size="md"
+                variant="primary"
               >
-                Create a free account
+                <span>Create a free account</span>
                 <ArrowRight size={16} weight="bold" />
-              </Link>
-              <Link
+              </Button>
+              <Button
                 to="/services"
-                className="inline-flex items-center gap-2 rounded-2xl border border-line bg-surface px-6 py-3 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                size="md"
+                variant="secondary"
               >
-                Browse services
-              </Link>
+                <span>Browse services</span>
+              </Button>
             </div>
           </div>
         </Reveal>

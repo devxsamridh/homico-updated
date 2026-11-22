@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Sparkle } from "@phosphor-icons/react";
 import { OFFER } from "../config/offers.js";
+import { Button, IconButton } from "./Button.jsx";
 
 /**
  * Offer modal — shown once per 24 h.
@@ -51,7 +52,7 @@ export default function OfferModal() {
 
           {/* Card */}
           <motion.div
-            className="relative z-10 w-full max-w-sm overflow-hidden rounded-3xl border border-line bg-surface shadow-soft-lg"
+            className="relative z-10 w-full max-w-sm overflow-hidden rounded-3xl border border-line bg-surface shadow-soft-lg dark:bg-surface/95 dark:backdrop-blur-md"
             initial={{ opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.96 }}
@@ -65,13 +66,15 @@ export default function OfferModal() {
 
             <div className="p-6">
               {/* Close */}
-              <button
+              <IconButton
                 onClick={close}
+                size="sm"
+                variant="ghost"
                 aria-label="Close"
-                className="absolute right-4 top-4 rounded-xl p-1.5 text-ink-faint hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="absolute right-4 top-4"
               >
                 <X size={16} weight="bold" />
-              </button>
+              </IconButton>
 
               {/* Icon */}
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-line bg-surface-muted text-ink">
@@ -83,19 +86,22 @@ export default function OfferModal() {
 
               {/* CTA */}
               <div className="mt-6 flex items-center gap-3">
-                <Link
+                <Button
                   to={OFFER.ctaHref}
                   onClick={close}
-                  className="flex-1 rounded-xl bg-primary py-2.5 text-center text-sm font-semibold text-primary-foreground shadow-soft transition-all hover:-translate-y-0.5 hover:bg-primary-strong hover:shadow-glow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  size="md"
+                  variant="primary"
+                  className="flex-1"
                 >
                   {OFFER.cta}
-                </Link>
-                <button
+                </Button>
+                <Button
                   onClick={close}
-                  className="rounded-xl border border-line px-4 py-2.5 text-sm font-medium text-ink-muted hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  size="md"
+                  variant="secondary"
                 >
                   Maybe later
-                </button>
+                </Button>
               </div>
             </div>
           </motion.div>

@@ -64,7 +64,7 @@ export default function Logo({
   return (
     <Link
       to="/"
-      className={`group inline-flex items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg rounded-xl ${className}`}
+      className={`group inline-flex items-center gap-2.5 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-bg ${className}`}
       aria-label="Homico – return to homepage"
     >
       {markSvg}

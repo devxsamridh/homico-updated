@@ -6,6 +6,7 @@ import Card from "../components/Card.jsx";
 import { formatDate, formatINR } from "../utils/format.js";
 import Modal from "../components/Modal.jsx";
 import Reveal, { RevealItem } from "../components/Reveal.jsx";
+import { Button } from "../components/Button.jsx";
 import {
   Calendar,
   Clock,
@@ -103,7 +104,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto max-w-7xl px-4 py-12 lg:py-16">
       {/* Welcome Banner */}
       <Reveal className="card-surface p-6 md:p-8 relative overflow-hidden">
         <div className="pointer-events-none absolute right-0 top-0 h-48 w-48 rounded-full bg-white/[0.03] blur-3xl" />
@@ -148,12 +149,9 @@ export default function DashboardPage() {
             </div>
             <p className="mt-3 text-base font-semibold text-ink">No bookings yet</p>
             <p className="text-sm text-ink-muted">Need help around the house? Book an expert inspection visit.</p>
-            <a
-              href="/services"
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-soft transition-all hover:bg-primary-strong"
-            >
+            <Button to="/services" size="sm" className="mt-5 text-xs">
               Browse Services
-            </a>
+            </Button>
           </div>
         ) : (
           <div className="grid gap-5 md:grid-cols-2">
@@ -247,13 +245,16 @@ export default function DashboardPage() {
                           Action Needed
                         </span>
                       )}
-                      <button
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="secondary"
                         onClick={() => openBookingDetail(b.id)}
-                        className="flex items-center gap-1 rounded-xl border border-line bg-surface-muted px-3 py-1.5 text-xs font-bold text-ink transition hover:bg-primary hover:text-primary-foreground"
+                        className="gap-1 px-3 text-xs font-bold text-ink hover:bg-primary hover:text-primary-foreground"
                       >
                         <span>View Details</span>
                         <CaretRight size={14} weight="bold" />
-                      </button>
+                      </Button>
                     </div>
                   </div>
                 </Card>
@@ -353,22 +354,28 @@ export default function DashboardPage() {
                         {/* Action Buttons for Sent Quotation */}
                         {isSent && (
                           <div className="mt-4 flex gap-2">
-                            <button
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="primary"
                               onClick={() => handleDecideQuote(q.id, "accepted")}
                               disabled={decidingQuote}
-                              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary py-2 text-xs font-bold text-primary-foreground shadow-soft transition hover:bg-primary-strong disabled:opacity-50"
+                              className="flex-1 gap-1.5 text-xs"
                             >
                               <Check size={14} weight="bold" />
                               Accept &amp; Start Work
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="secondary"
                               onClick={() => handleDecideQuote(q.id, "rejected")}
                               disabled={decidingQuote}
-                              className="flex items-center justify-center gap-1 rounded-xl border border-line bg-surface px-4 py-2 text-xs font-semibold text-ink-muted hover:text-ink disabled:opacity-50"
+                              className="gap-1 text-xs text-ink-muted hover:text-ink"
                             >
                               <XCircle size={14} weight="bold" />
                               Decline
-                            </button>
+                            </Button>
                           </div>
                         )}
                       </div>

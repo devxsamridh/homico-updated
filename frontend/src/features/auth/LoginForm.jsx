@@ -27,12 +27,12 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
+    <form onSubmit={onSubmit} className="space-y-3">
       <Field label="Email" type="email" value={form.email} onChange={handle("email")} required />
       <Field label="Password" type="password" value={form.password} onChange={handle("password")} required />
       {error && <p className="text-sm font-medium text-red-500">{error}</p>}
-      <Button type="submit" disabled={submitting} className="w-full">
-        {submitting ? "Signing in…" : "Sign in"}
+      <Button type="submit" loading={submitting} disabled={submitting} size="md" className="w-full">
+        Sign in
       </Button>
     </form>
   );
@@ -41,10 +41,10 @@ export default function LoginForm() {
 function Field({ label, ...props }) {
   return (
     <label className="block">
-      <span className="text-sm font-medium text-ink">{label}</span>
+      <span className="text-xs font-medium text-ink">{label}</span>
       <input
         {...props}
-        className="mt-1 input-base"
+        className="mt-0.5 input-base py-1.5"
       />
     </label>
   );

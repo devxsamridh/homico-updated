@@ -17,23 +17,23 @@ const LEGAL = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-line bg-surface mt-auto" role="contentinfo">
-      <div className="container mx-auto px-4 py-12 md:px-6">
-        <div className="grid gap-10 md:grid-cols-3">
+    <footer className="mt-auto border-t border-line bg-surface dark:bg-surface/85 dark:backdrop-blur-md" role="contentinfo">
+      <div className="container mx-auto max-w-7xl px-4 py-2 md:px-6">
+        <div className="grid gap-3 md:grid-cols-3 md:gap-6">
           {/* Brand */}
           <div>
             <Logo />
-            <p className="mt-3 max-w-xs text-sm text-ink-muted leading-relaxed">
+            <p className="mt-2 max-w-xs text-xs text-ink-muted leading-relaxed">
               Book home services, source raw materials, and manage full construction — all from one platform.
             </p>
           </div>
 
           {/* Navigation */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-ink-faint">
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-ink-faint">
               Navigate
             </h3>
-            <ul className="space-y-2.5">
+            <ul className="space-y-1.5">
               {NAV.map((l) => (
                 <li key={l.to}>
                   <Link
@@ -49,7 +49,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="mb-4 text-xs font-semibold uppercase tracking-widest text-ink-faint">
+            <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-widest text-ink-faint">
               Contact
             </h3>
             <p className="text-sm text-ink-muted">
@@ -61,7 +61,7 @@ export default function Footer() {
                 {SUPPORT_EMAIL}
               </a>
             </p>
-            <ul className="mt-4 space-y-2.5">
+            <ul className="mt-2 space-y-1.5">
               {LEGAL.map((l) => (
                 <li key={l.to}>
                   <Link
@@ -77,7 +77,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-line pt-6 text-xs text-ink-faint sm:flex-row">
+        <div className="mt-2 flex flex-col items-center justify-between gap-2 border-t border-line pt-2 text-xs text-ink-faint sm:flex-row">
           <p>© {new Date().getFullYear()} Homico. Student portfolio project.</p>
           <p className="flex items-center gap-1">
             Built with <Heart size={13} weight="fill" className="text-ink" /> for the interview

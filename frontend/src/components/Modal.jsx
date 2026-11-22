@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "@phosphor-icons/react";
+import { IconButton } from "./Button.jsx";
 
 /**
  * Accessible modal dialog — focus trap, Esc close, scroll lock, animated.
@@ -96,7 +97,7 @@ export default function Modal({ open, onClose, title, size = "md", children }) {
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
-            className={`relative z-10 w-full ${sizes[size]} max-h-[90vh] overflow-y-auto rounded-3xl bg-surface shadow-soft-lg`}
+            className={`relative z-10 w-full ${sizes[size]} max-h-[90vh] overflow-y-auto rounded-3xl bg-surface shadow-soft-lg dark:bg-surface/95 dark:backdrop-blur-md`}
             initial={{ opacity: 0, scale: 0.95, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -110,13 +111,15 @@ export default function Modal({ open, onClose, title, size = "md", children }) {
                   {title}
                 </h2>
               )}
-              <button
+              <IconButton
                 onClick={onClose}
+                size="sm"
+                variant="ghost"
                 aria-label="Close dialog"
-                className="ml-auto rounded-xl p-1.5 text-ink-faint transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="ml-auto"
               >
                 <X size={18} weight="bold" />
-              </button>
+              </IconButton>
             </div>
 
             {/* Body */}
@@ -128,4 +131,3 @@ export default function Modal({ open, onClose, title, size = "md", children }) {
     document.body
   );
 }
-
